@@ -38,13 +38,19 @@ const equipmentsWithPosition = equipment.map((eq) => {
 
   const positions = positionsEntry?.positions || [];
 
+    const filteredHistory = filterHistoryByDate(
+      positions,
+      dateFilter.start,
+      dateFilter.end
+    );
+
   const currentState = getCurrentState(eq.id, stateHistory, equipmentStateMap);
 
   return {
     ...eq,
-    position: getLatestByDate(positions),
+    position: getLatestByDate(filteredHistory),
     state: currentState,
-    history: positions,
+    history: filteredHistory,
   };
 });
 
@@ -63,6 +69,8 @@ const equipmentsWithPosition = equipment.map((eq) => {
         onChangeFilter={setStatusFilter}
         showHistory={showHistory}
         onToggleHistory={setShowHistory}
+        dateFilter={dateFilter}
+        onChangeDateFilter={setDateFilter}
       />
 
       <MapView

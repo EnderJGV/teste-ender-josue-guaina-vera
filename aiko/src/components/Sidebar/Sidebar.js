@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 import "./Sidebar.css";
 
-function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChangeFilter, showHistory, onToggleHistory }) {
+import { getLastPeriod } from "../../utils/dateUtils";
+import { calculateDistanceKm} from "../../utils/geoUtils";
+
+
+function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChangeFilter, showHistory, onToggleHistory, dateFilter, onChangeDateFilter }) {
 
   const itemRefs = useRef({});
 
@@ -53,6 +57,66 @@ function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChan
           Mostrar histórico
         </label>
       </div>
+
+      <div className="quick-periods">
+        <button onClick={() => onChangeDateFilter(getLastPeriod(24))}>
+          24h
+        </button>
+
+        <button onClick={() => onChangeDateFilter(getLastPeriod(24 * 7))}>
+          7D
+        </button>
+
+        <button onClick={() => onChangeDateFilter(getLastPeriod(24 * 90))}>
+          3M
+        </button>
+
+        <button onClick={() => onChangeDateFilter({ start: "", end: "" })}>
+          Limpar
+        </button>
+      </div>
+
+      <div className="date-filter">
+        <label>
+          Início
+          <input
+            type="datetime-local"
+            value={dateFilter.start}
+            onChange={(e) =>
+              onChangeDateFilter((prev) => ({
+                ...prev,
+                start: e.target.value,
+              }))
+            }
+          />
+        </label>
+
+        <label>
+          Fim
+          <input
+            type="datetime-local"
+            value={dateFilter.end}
+            onChange={(e) =>
+              onChangeDateFilter((prev) => ({
+                ...prev,
+                end: e.target.value,
+              }))
+            }
+          />
+        </label>
+      </div>
+
+      {selectedEquipment?.history?.length > 1 && (
+        <div
+          className="equipment-metrics"
+          style={{ borderLeftColor: selectedEquipment.state?.color }}
+        >
+          <span>Distância percorrida </span>
+          <strong>
+            {calculateDistanceKm(selectedEquipment.history).toFixed(2)} km
+          </strong>
+        </div>
+      )}
 
       <ul>
         {equipments.map((eq) => (
