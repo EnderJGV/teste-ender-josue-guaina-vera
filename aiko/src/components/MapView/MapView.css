@@ -3,7 +3,6 @@
     width: 100%;
 }
 
-/* Move os controles de zoom para o canto inferior direito */
 .leaflet-top.leaflet-left {
     left: auto;
     right: 60px;
@@ -15,13 +14,11 @@ div.leaflet-control-zoom.leaflet-bar.leaflet-control{
     border: none;
 }
 
-/* Container do zoom */
 .leaflet-control-zoom {
     border: none;
     box-shadow: none;
 }
 
-/* Botões + e - */
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out {
     background: #ffffff !important;
@@ -45,7 +42,6 @@ div.leaflet-control-zoom.leaflet-bar.leaflet-control{
     transition: all 0.2s ease;
 }
 
-/* Hover */
 .leaflet-control-zoom-in:hover {
     background: #2ecc71 !important;
     color: #ffffff !important;
@@ -57,12 +53,10 @@ div.leaflet-control-zoom.leaflet-bar.leaflet-control{
     transform: translateY(-2px);
 }
 
-/* Remove borda feia padrão */
 .leaflet-bar a {
     border: none !important;
 }
 
-/* Estado ativo */
 .leaflet-control-zoom-in:active,
 .leaflet-control-zoom-out:active {
     transform: scale(0.95);

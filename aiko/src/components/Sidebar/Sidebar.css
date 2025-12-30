@@ -6,6 +6,11 @@
     overflow-y: auto;
 }
 
+.Logo{
+    position: relative;
+    width: 80px;
+}
+
 .sidebar li.active {
     border-left: 4px solid var(--status-color);
     background: #eaf2ff;
@@ -70,7 +75,6 @@
     flex-wrap: wrap;
 }
 
-/* BOTÃO */
 .filter-btn {
     flex: 1;
     padding: 8px 10px;
@@ -83,12 +87,10 @@
     color: #555;
 }
 
-/* HOVER */
 .filter-btn:hover {
     background: #f0f0f0;
 }
 
-/* ATIVO */
 .filter-btn.active {
     background: var(--status-color);
     color: #fff;
@@ -113,7 +115,6 @@
     accent-color: #3498db;
 }
 
-/* CONTAINER DO FILTRO DE DATA */
 .date-filter {
     display: flex;
     flex-direction: column;
@@ -125,7 +126,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
-/* LABEL */
 .date-filter label {
     display: flex;
     flex-direction: column;
@@ -135,7 +135,6 @@
     gap: 4px;
 }
 
-/* INPUT */
 .date-filter input[type="datetime-local"] {
     padding: 8px 10px;
     font-size: 13px;
@@ -147,14 +146,12 @@
     transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* FOCUS */
 .date-filter input[type="datetime-local"]:focus {
     border-color: #3498db;
     box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
     background: #fff;
 }
 
-/* INPUT DISABLED (se usar depois) */
 .date-filter input[type="datetime-local"]:disabled {
     background: #eee;
     cursor: not-allowed;
@@ -185,7 +182,6 @@
     transform: scale(0.97);
 }
 
-/* MÉTRICA DO EQUIPAMENTO */
 .equipment-metrics {
     margin: 14px 0;
     padding: 10px 10px;
@@ -198,7 +194,6 @@
     border-left: 5px solid #3498db;
 }
 
-/* TEXTO DESCRITIVO */
 .equipment-metrics span {
     font-size: 10px;
     text-transform: uppercase;
@@ -206,14 +201,11 @@
     color: #777;
 }
 
-/* VALOR */
 .equipment-metrics strong {
     font-size: 12px;
     font-weight: 700;
     color: #222;
 }
-
-/* ANIMAÇÃO SUAVE AO APARECER */
 .equipment-metrics {
     animation: fadeSlideIn 0.3s ease;
 }
@@ -229,8 +221,6 @@
         transform: translateY(0);
     }
 }
-
-/* ===== TIMELINE CONTAINER ===== */
 .timeline {
     margin-top: 20px;
     padding: 16px;
@@ -242,7 +232,6 @@
     gap: 12px;
 }
 
-/* ===== RANGE (SLIDER) ===== */
 .timeline input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
@@ -257,7 +246,6 @@
     cursor: pointer;
 }
 
-/* TRACK */
 .timeline input[type="range"]::-webkit-slider-runnable-track {
     height: 6px;
     border-radius: 4px;
@@ -268,7 +256,6 @@
     border-radius: 4px;
 }
 
-/* THUMB */
 .timeline input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 16px;
@@ -288,7 +275,6 @@
     border: 3px solid #fff;
 }
 
-/* ===== CONTROLS ===== */
 .timeline-controls {
     display: flex;
     align-items: center;
@@ -296,7 +282,6 @@
     gap: 12px;
 }
 
-/* PLAY / PAUSE BUTTON */
 .timeline-controls button {
     background: #111;
     color: #fff;
@@ -313,7 +298,6 @@
     transform: translateY(-1px);
 }
 
-/* DATE LABEL */
 .timeline-controls span {
     font-size: 13px;
     color: #555;
@@ -321,14 +305,11 @@
     white-space: nowrap;
 }
 
-/* ===== CONTAINER GERAL ===== */
 .dashboard {
     position: relative;
     width: 100vw;
     height: 100vh;
 }
-
-/* ===== SIDEBAR FLUTUANTE ===== */
 .sidebar {
     position: absolute;
     top: 20px;
@@ -350,14 +331,11 @@
     z-index: 1000;
     overflow: hidden;
 }
-
-/* ===== SCROLL INTERNO ===== */
 .sidebar-content {
     overflow-y: auto;
     padding-right: 6px;
 }
 
-/* scrollbar discreta */
 .sidebar-content::-webkit-scrollbar {
     width: 6px;
 }
@@ -367,14 +345,40 @@
     border-radius: 3px;
 }
 
-/* ===== HEADER ===== */
 .sidebar-header {
-    font-size: 18px;
     font-weight: 600;
     color: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* ===== RESPONSIVO ===== */
+.sidebar-header span{
+    font-weight: 300;
+    font-size: .9rem;
+}
+
+.equipment-actions {
+    margin-top: 12px;
+}
+
+.view-history-btn {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    background: #111;
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+.view-history-btn:hover {
+    background: #2ecc71;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: calc(100vw - 40px);

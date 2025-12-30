@@ -20,6 +20,7 @@ export function getCurrentState(equipmentId, stateHistory, equipmentStateMap) {
   return equipmentStateMap[lastState.equipmentStateId] || null;
 }
 
+// Filtra o histórico de posições por um intervalo de datas
 export function filterHistoryByDate(history, start, end) {
   if (!start && !end) return history;
 
@@ -36,7 +37,7 @@ export function filterHistoryByDate(history, start, end) {
   });
 }
 
-
+// Obtém o estado do equipamento em uma data específica
 export function getStateAtDate(date, stateHistory, stateMap) {
   const target = new Date(date);
 

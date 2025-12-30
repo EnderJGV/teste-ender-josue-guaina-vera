@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import MapView from "../components/MapView/MapView.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
+import EquipmentModal from "../components/EquipmentModal/EquipmentModal";
+
 
 import { loadData } from "../services/dataServices";
 import {
@@ -11,8 +13,8 @@ import {
 } from "../utils/equipmentUtils";
 
 function Dashboard() {
-  const { equipment, positionHistory, stateHistory, equipmentState } =
-    loadData();
+  const { equipment, positionHistory, stateHistory, equipmentState } = loadData();
+  
   const [selectedEquipment, setSelectedEquipment] = useState(null);
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [showHistory, setShowHistory] = useState(true);
@@ -22,6 +24,8 @@ function Dashboard() {
   });
   const [timelineIndex, setTimelineIndex] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
 
   useEffect(() => {
     if (selectedEquipment?.history?.length) {
@@ -58,7 +62,6 @@ function Dashboard() {
     equipmentStateMap[state.id] = state;
   });
 
-  // Monta os equipamentos com a última posição
 const equipmentsWithPosition = equipment.map((eq) => {
   const positionsEntry = positionHistory.find((p) => p.equipmentId === eq.id);
 
@@ -105,6 +108,7 @@ const equipmentsWithPosition = equipment.map((eq) => {
         setTimelineIndex={setTimelineIndex}
         isPlaying={isPlaying}
         setIsPlaying={setIsPlaying}
+        onOpenHistory={() => setShowModal(true)}
       />
 
       <MapView
@@ -115,6 +119,14 @@ const equipmentsWithPosition = equipment.map((eq) => {
         equipmentStateMap={equipmentStateMap}
         timelineIndex={timelineIndex}
       />
+
+      {showModal && selectedEquipment && (
+        <EquipmentModal
+          equipment={selectedEquipment}
+          stateMap={equipmentStateMap}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }

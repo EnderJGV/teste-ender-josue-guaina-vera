@@ -1,7 +1,8 @@
 import L from "leaflet";
 
+// Ícone de caminhão personalizado para o mapa
 export function getTruckIcon(color = "#3498db", isSelected = false) {
-  const size = isSelected ? 42 : 32;
+  const size = isSelected ? 40 : 40;
 
   return L.divIcon({
     className: "truck-marker",

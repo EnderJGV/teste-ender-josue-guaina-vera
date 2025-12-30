@@ -33,7 +33,7 @@ export function calculateDistanceKm(points = []) {
   return distance;
 }
 
-
+// Constrói segmentos de linha coloridos baseados no estado do equipamento
 export function buildStateSegments(history, stateHistory, stateMap) {
   if (history.length < 2) return [];
 
@@ -72,6 +72,7 @@ export function buildStateSegments(history, stateHistory, stateMap) {
   return segments;
 }
 
+// Obtém pontos de mudança de estado no histórico
 export function getStateChangePoints(history, stateHistory, stateMap) {
   if (!history.length) return [];
 
@@ -99,11 +100,12 @@ export function getStateChangePoints(history, stateHistory, stateMap) {
   return points;
 }
 
-
+// Interpolação linear
 function lerp(start, end, t) {
   return start + (end - start) * t;
 }
 
+// Densifica o histórico de posições adicionando pontos intermediários
 export function densifyHistory(history, maxDistanceMeters = 200) {
   if (history.length < 2) return history;
 

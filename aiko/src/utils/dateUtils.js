@@ -1,3 +1,4 @@
+// Função para obter o período de tempo final baseado em horas atrás
 export function getLastPeriod(hours) {
   const end = new Date();
   const start = new Date(end.getTime() - hours * 60 * 60 * 1000);

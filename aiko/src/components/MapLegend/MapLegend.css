@@ -52,7 +52,7 @@
 
 @media (max-width: 768px){
     .map-legend {
-        right: 550px;
+        right: 70%;
         bottom: 400px;
     }
 }

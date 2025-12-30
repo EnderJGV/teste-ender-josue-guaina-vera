@@ -3,29 +3,44 @@ import "./Sidebar.css";
 
 import { getLastPeriod } from "../../utils/dateUtils";
 import { calculateDistanceKm} from "../../utils/geoUtils";
+import Logo from "../../assets/img/aiko.png"
 
-
-function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChangeFilter, showHistory, onToggleHistory, dateFilter, onChangeDateFilter, timelineIndex,setTimelineIndex, isPlaying, setIsPlaying }) {
-
+function Sidebar({
+  equipments,
+  selectedEquipment,
+  onSelect,
+  statusFilter,
+  onChangeFilter,
+  showHistory,
+  onToggleHistory,
+  dateFilter,
+  onChangeDateFilter,
+  timelineIndex,
+  setTimelineIndex,
+  isPlaying,
+  setIsPlaying,
+  onOpenHistory,
+}) {
   const itemRefs = useRef({});
 
   useEffect(() => {
-    if(selectedEquipment){
+    if (selectedEquipment) {
       const el = itemRefs.current[selectedEquipment.id];
-      if(el){
+      if (el) {
         el.scrollIntoView({
           behavior: "smooth",
-          block : "center",
-        })
+          block: "center",
+        });
       }
     }
   }, [selectedEquipment]);
 
-  
-
   return (
     <aside className="sidebar">
-      <div className="sidebar-header">Equipamentos</div>
+      <div className="sidebar-header">
+        <img src={Logo} className="Logo" alt="Logo"></img>
+        <span>Equipamentos</span>
+      </div>
 
       <div className="sidebar-content">
         {/* lista, filtros, timeline, métricas */}
@@ -148,6 +163,14 @@ function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChan
           </div>
         )}
 
+        {selectedEquipment && (
+          <div className="equipment-actions">
+            <button className="view-history-btn" onClick={onOpenHistory}>
+              Ver histórico de estados
+            </button>
+          </div>
+        )}
+
         <ul>
           {equipments.map((eq) => {
             const lastDate =
@@ -173,7 +196,6 @@ function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChan
                 <div className="equipment-status">
                   {eq.state?.name || "Desconhecido"}
                 </div>
-
               </li>
             );
           })}
