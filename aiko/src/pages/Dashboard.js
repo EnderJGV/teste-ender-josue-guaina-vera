@@ -90,7 +90,7 @@ const equipmentsWithPosition = equipment.map((eq) => {
       : equipmentsWithPosition.filter((eq) => eq.state?.name === statusFilter);
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div style={{ display: "flex", height: "100vh" }} className="dashboard">
       <Sidebar
         equipments={filteredEquipment}
         selectedEquipment={selectedEquipment}

@@ -105,7 +105,13 @@ function MapView({
   }, [selectedEquipment]);
 
   return (
-    <MapContainer center={[-19.126536, -45.947756]} zoom={10} className="map">
+    <MapContainer
+      center={[-19.126536, -45.947756]}
+      zoom={10}
+      minZoom={6}
+      maxZoom={18}
+      className="map"
+    >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       <MapController selectedEquipment={selectedEquipment} />

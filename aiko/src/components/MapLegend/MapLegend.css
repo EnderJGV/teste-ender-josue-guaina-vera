@@ -1,7 +1,7 @@
 .map-legend {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 40px;
+    right: 50px;
     background: #ffffff;
     padding: 12px 14px;
     border-radius: 10px;
@@ -48,4 +48,11 @@
 .dot.small {
     width: 8px;
     height: 8px;
+}
+
+@media (max-width: 768px){
+    .map-legend {
+        right: 550px;
+        bottom: 400px;
+    }
 }
