@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import MapView from "../components/MapView/MapView.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
@@ -20,6 +20,32 @@ function Dashboard() {
     start: "",
     end: "",
   });
+  const [timelineIndex, setTimelineIndex] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    if (selectedEquipment?.history?.length) {
+      setTimelineIndex(0);
+    }
+  }, [selectedEquipment]);
+
+  useEffect(() => {
+    if (!isPlaying || !selectedEquipment) return;
+
+    const interval = setInterval(() => {
+      setTimelineIndex((prev) => {
+        if (prev === null) return 0;
+        if (prev >= selectedEquipment.history.length - 1) {
+          setIsPlaying(false);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 500); // velocidade (ms)
+
+    return () => clearInterval(interval);
+  }, [isPlaying, selectedEquipment]);
+
 
 
 
@@ -36,7 +62,10 @@ function Dashboard() {
 const equipmentsWithPosition = equipment.map((eq) => {
   const positionsEntry = positionHistory.find((p) => p.equipmentId === eq.id);
 
+  const stateEntry = stateHistory.find((s) => s.equipmentId === eq.id);
+
   const positions = positionsEntry?.positions || [];
+  const states = stateEntry?.states || [];
 
     const filteredHistory = filterHistoryByDate(
       positions,
@@ -50,6 +79,7 @@ const equipmentsWithPosition = equipment.map((eq) => {
     ...eq,
     position: getLatestByDate(filteredHistory),
     state: currentState,
+    stateHistory: states,
     history: filteredHistory,
   };
 });
@@ -71,6 +101,10 @@ const equipmentsWithPosition = equipment.map((eq) => {
         onToggleHistory={setShowHistory}
         dateFilter={dateFilter}
         onChangeDateFilter={setDateFilter}
+        timelineIndex={timelineIndex}
+        setTimelineIndex={setTimelineIndex}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
       />
 
       <MapView
@@ -78,6 +112,8 @@ const equipmentsWithPosition = equipment.map((eq) => {
         selectedEquipment={selectedEquipment}
         onMapClick={() => setSelectedEquipment(null)}
         showHistory={showHistory}
+        equipmentStateMap={equipmentStateMap}
+        timelineIndex={timelineIndex}
       />
     </div>
   );

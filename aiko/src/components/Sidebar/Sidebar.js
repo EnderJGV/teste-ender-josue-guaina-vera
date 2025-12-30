@@ -5,7 +5,7 @@ import { getLastPeriod } from "../../utils/dateUtils";
 import { calculateDistanceKm} from "../../utils/geoUtils";
 
 
-function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChangeFilter, showHistory, onToggleHistory, dateFilter, onChangeDateFilter }) {
+function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChangeFilter, showHistory, onToggleHistory, dateFilter, onChangeDateFilter, timelineIndex,setTimelineIndex, isPlaying, setIsPlaying }) {
 
   const itemRefs = useRef({});
 
@@ -105,6 +105,30 @@ function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChan
           />
         </label>
       </div>
+
+      {selectedEquipment?.history?.length > 1 && (
+        <div className="timeline">
+          <input
+            type="range"
+            min="0"
+            max={selectedEquipment.history.length - 1}
+            value={timelineIndex ?? 0}
+            onChange={(e) => setTimelineIndex(Number(e.target.value))}
+          />
+
+          <div className="timeline-controls">
+            <button onClick={() => setIsPlaying((p) => !p)}>
+              {isPlaying ? "Pausar" : "Play"}
+            </button>
+
+            <span>
+              {new Date(
+                selectedEquipment.history[timelineIndex]?.date
+              ).toLocaleString()}
+            </span>
+          </div>
+        </div>
+      )}
 
       {selectedEquipment?.history?.length > 1 && (
         <div

@@ -35,3 +35,26 @@ export function filterHistoryByDate(history, start, end) {
     return true;
   });
 }
+
+
+export function getStateAtDate(date, stateHistory, stateMap) {
+  const target = new Date(date);
+
+  // ordena por data crescente
+  const sortedStates = [...stateHistory].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
+  let lastState = null;
+
+  for (const entry of sortedStates) {
+    if (new Date(entry.date) <= target) {
+      lastState = stateMap[entry.equipmentStateId];
+    } else {
+      break;
+    }
+  }
+
+  return lastState;
+}
+

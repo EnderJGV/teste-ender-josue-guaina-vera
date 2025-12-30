@@ -11,7 +11,17 @@ import {
 
 import "./MapView.css";
 import { getTruckIcon } from "../../utils/mapIcons";
+import {
+  buildStateSegments,
+  getStateChangePoints,
+  densifyHistory,
+} from "../../utils/geoUtils";
 import MapLegend from "../MapLegend/MapLegend";
+import L from "leaflet";
+
+/* =========================
+   Helpers internos do mapa
+========================= */
 
 function MapController({ selectedEquipment }) {
   const map = useMap();
@@ -31,23 +41,63 @@ function MapController({ selectedEquipment }) {
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
     click() {
-      if (typeof onMapClick === "function") {
-        onMapClick();
-      }
+      onMapClick?.();
     },
   });
 
   return null;
 }
 
-function MapView({ equipments, selectedEquipment, onMapClick, showHistory }) {
+function getStateChangeIcon(color) {
+  return L.divIcon({
+    className: "state-change-marker",
+    html: `
+      <div style="
+        width: 10px;
+        height: 10px;
+        background: ${color};
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 4px rgba(0,0,0,0.6);
+      "></div>
+    `,
+  });
+}
+
+/* =========================
+        MAP VIEW
+========================= */
+
+function MapView({
+  equipments,
+  selectedEquipment,
+  onMapClick,
+  showHistory,
+  equipmentStateMap,
+  timelineIndex,
+}) {
   const markerRefs = useRef({});
 
-  // Abre / fecha popup automaticamente
+  // posição animada (timeline)
+  const animatedPosition =
+    selectedEquipment && timelineIndex !== null
+      ? selectedEquipment.history[timelineIndex]
+      : null;
+
+  // histórico até o tempo atual
+  const partialHistory =
+    selectedEquipment && timelineIndex !== null
+      ? selectedEquipment.history.slice(0, timelineIndex + 1)
+      : selectedEquipment?.history;
+
+  // histórico densificado (visual)
+  const denseHistory = partialHistory ? densifyHistory(partialHistory) : [];
+
+  // abre / fecha popups automaticamente
   useEffect(() => {
-    Object.values(markerRefs.current).forEach((marker) => {
-      marker?.closePopup?.();
-    });
+    Object.values(markerRefs.current).forEach((marker) =>
+      marker?.closePopup?.()
+    );
 
     if (selectedEquipment) {
       markerRefs.current[selectedEquipment.id]?.openPopup?.();
@@ -58,43 +108,73 @@ function MapView({ equipments, selectedEquipment, onMapClick, showHistory }) {
     <MapContainer center={[-19.126536, -45.947756]} zoom={10} className="map">
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-      {/* Centraliza no equipamento selecionado */}
       <MapController selectedEquipment={selectedEquipment} />
-
-      {/* Clique no mapa limpa seleção */}
       <MapClickHandler onMapClick={onMapClick} />
 
-      {/* HISTÓRICO (Polyline) — CONTROLADO PELO TOGGLE */}
-      {showHistory && selectedEquipment?.history?.length > 1 && (
-        <Polyline
-          positions={selectedEquipment.history.map((pos) => [pos.lat, pos.lon])}
-          pathOptions={{
-            color: selectedEquipment.state?.color || "#3498db",
-            weight: 4,
-            opacity: 0.8,
-          }}
+      {/* TRAJETO COLORIDO POR ESTADO */}
+      {showHistory &&
+        denseHistory.length > 1 &&
+        selectedEquipment?.stateHistory?.length &&
+        equipmentStateMap &&
+        buildStateSegments(
+          denseHistory,
+          selectedEquipment.stateHistory,
+          equipmentStateMap
+        ).map((segment, index) => (
+          <Polyline
+            key={index}
+            positions={segment.points}
+            pathOptions={{
+              color: segment.color,
+              weight: 4,
+              opacity: 0.85,
+            }}
+          />
+        ))}
+
+      {/* PONTOS DE MUDANÇA DE ESTADO */}
+      {showHistory &&
+        denseHistory.length > 1 &&
+        selectedEquipment?.stateHistory?.length &&
+        equipmentStateMap &&
+        getStateChangePoints(
+          denseHistory,
+          selectedEquipment.stateHistory,
+          equipmentStateMap
+        ).map((point, index) => (
+          <Marker
+            key={`state-change-${index}`}
+            position={[point.lat, point.lon]}
+            icon={getStateChangeIcon(point.state.color)}
+          >
+            <Popup>
+              <strong>{point.state.name}</strong>
+              <br />
+              {new Date(point.date).toLocaleString()}
+            </Popup>
+          </Marker>
+        ))}
+
+      {/* MARKER ANIMADO (TIMELINE) */}
+      {animatedPosition && (
+        <Marker
+          position={[animatedPosition.lat, animatedPosition.lon]}
+          icon={getTruckIcon(selectedEquipment.state?.color, true)}
+          zIndexOffset={2000}
         />
       )}
 
-      {/* MARKERS — SEMPRE VISÍVEIS */}
+      {/* MARKERS FIXOS */}
       {equipments.map(
         (eq) =>
-          eq.position && (
+          eq.position &&
+          (!selectedEquipment || eq.id !== selectedEquipment.id) && (
             <Marker
               key={eq.id}
               position={[eq.position.lat, eq.position.lon]}
-              icon={getTruckIcon(
-                eq.state?.color,
-                selectedEquipment?.id === eq.id
-              )}
+              icon={getTruckIcon(eq.state?.color)}
               ref={(ref) => {
                 if (ref) markerRefs.current[eq.id] = ref;
-              }}
-              zIndexOffset={selectedEquipment?.id === eq.id ? 1000 : 0}
-              eventHandlers={{
-                click: (e) => {
-                  e.originalEvent.stopPropagation();
-                },
               }}
             >
               <Popup>
@@ -109,7 +189,6 @@ function MapView({ equipments, selectedEquipment, onMapClick, showHistory }) {
           )
       )}
 
-      {/* LEGENDA */}
       <MapLegend />
     </MapContainer>
   );
