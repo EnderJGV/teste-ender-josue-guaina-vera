@@ -48,12 +48,62 @@
 
 .equipment-name {
     font-weight: 600;
-    font-size: 15px;
+    font-size: 12px;
     color: #222;
 }
 
 .equipment-status {
-    font-size: 13px;
+    font-size: 10px;
     margin-top: 4px;
     color: var(--status-color);
+}
+
+.filter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+/* BOTÃO */
+.filter-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #555;
+}
+
+/* HOVER */
+.filter-btn:hover {
+    background: #f0f0f0;
+}
+
+/* ATIVO */
+.filter-btn.active {
+    background: var(--status-color);
+    color: #fff;
+    border-color: var(--status-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.history-toggle {
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #333;
+}
+
+.history-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.history-toggle input {
+    accent-color: #3498db;
 }

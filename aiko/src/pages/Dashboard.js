@@ -4,16 +4,28 @@ import MapView from "../components/MapView/MapView.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
 
 import { loadData } from "../services/dataServices";
-import { getLatestByDate, getCurrentState } from "../utils/equipmentUtils";
+import {
+  getLatestByDate,
+  getCurrentState,
+  filterHistoryByDate,
+} from "../utils/equipmentUtils";
 
 function Dashboard() {
   const { equipment, positionHistory, stateHistory, equipmentState } =
     loadData();
   const [selectedEquipment, setSelectedEquipment] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [showHistory, setShowHistory] = useState(true);
+  const [dateFilter, setDateFilter] = useState({
+    start: "",
+    end: "",
+  });
 
-      function handleSelectEquipment(eq) {
-        setSelectedEquipment((current) => (current?.id === eq.id ? null : eq));
-      }
+
+
+  function handleSelectEquipment(eq) {
+    setSelectedEquipment((current) => (current?.id === eq.id ? null : eq));
+  }
 
   const equipmentStateMap = {};
   equipmentState.forEach((state) => {
@@ -21,36 +33,43 @@ function Dashboard() {
   });
 
   // Monta os equipamentos com a última posição
-  const equipmentsWithPosition = equipment.map((eq) => {
-    const positions =
-      positionHistory.find((p) => p.equipmentId === eq.id)?.positions || [];
+const equipmentsWithPosition = equipment.map((eq) => {
+  const positionsEntry = positionHistory.find((p) => p.equipmentId === eq.id);
 
-    const currentState = getCurrentState(
-      eq.id,
-      stateHistory,
-      equipmentStateMap
-    );
+  const positions = positionsEntry?.positions || [];
 
+  const currentState = getCurrentState(eq.id, stateHistory, equipmentStateMap);
 
-    return {
-      ...eq,
-      position: getLatestByDate(positions),
-      state: currentState,
-    };
-  });
+  return {
+    ...eq,
+    position: getLatestByDate(positions),
+    state: currentState,
+    history: positions,
+  };
+});
+
+  const filteredEquipment =
+    statusFilter === "ALL"
+      ? equipmentsWithPosition
+      : equipmentsWithPosition.filter((eq) => eq.state?.name === statusFilter);
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <Sidebar
-        equipments={equipmentsWithPosition}
+        equipments={filteredEquipment}
         selectedEquipment={selectedEquipment}
         onSelect={handleSelectEquipment}
+        statusFilter={statusFilter}
+        onChangeFilter={setStatusFilter}
+        showHistory={showHistory}
+        onToggleHistory={setShowHistory}
       />
 
       <MapView
-        equipments={equipmentsWithPosition}
+        equipments={filteredEquipment}
         selectedEquipment={selectedEquipment}
         onMapClick={() => setSelectedEquipment(null)}
+        showHistory={showHistory}
       />
     </div>
   );

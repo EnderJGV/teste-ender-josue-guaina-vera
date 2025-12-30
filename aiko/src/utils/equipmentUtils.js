@@ -20,4 +20,18 @@ export function getCurrentState(equipmentId, stateHistory, equipmentStateMap) {
   return equipmentStateMap[lastState.equipmentStateId] || null;
 }
 
+export function filterHistoryByDate(history, start, end) {
+  if (!start && !end) return history;
 
+  const startDate = start ? new Date(start) : null;
+  const endDate = end ? new Date(end) : null;
+
+  return history.filter((pos) => {
+    const current = new Date(pos.date);
+
+    if (startDate && current < startDate) return false;
+    if (endDate && current > endDate) return false;
+
+    return true;
+  });
+}

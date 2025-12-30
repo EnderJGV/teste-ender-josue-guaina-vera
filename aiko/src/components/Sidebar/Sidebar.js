@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "./Sidebar.css";
 
-function Sidebar({ equipments, selectedEquipment, onSelect }) {
+function Sidebar({ equipments, selectedEquipment, onSelect, statusFilter, onChangeFilter, showHistory, onToggleHistory }) {
 
   const itemRefs = useRef({});
 
@@ -21,6 +21,39 @@ function Sidebar({ equipments, selectedEquipment, onSelect }) {
     <aside className="sidebar">
       <h3>Equipamentos</h3>
 
+      <div className="filter">
+        {["ALL", "Operando", "Parado", "Manutenção"].map((status) => (
+          <button
+            key={status}
+            className={`filter-btn ${statusFilter === status ? "active" : ""}`}
+            style={{
+              "--status-color":
+                status === "Operando"
+                  ? "#2ecc71"
+                  : status === "Parado"
+                  ? "#f1c40f"
+                  : status === "Manutenção"
+                  ? "#e74c3c"
+                  : "#3498db",
+            }}
+            onClick={() => onChangeFilter(status)}
+          >
+            {status === "ALL" ? "Todos" : status}
+          </button>
+        ))}
+      </div>
+
+      <div className="history-toggle">
+        <label>
+          <input
+            type="checkbox"
+            checked={showHistory}
+            onChange={(e) => onToggleHistory(e.target.checked)}
+          />
+          Mostrar histórico
+        </label>
+      </div>
+
       <ul>
         {equipments.map((eq) => (
           <li
@@ -29,7 +62,7 @@ function Sidebar({ equipments, selectedEquipment, onSelect }) {
             className={`equipment-card ${
               selectedEquipment?.id === eq.id ? "active" : ""
             }`}
-            style={{ "--status-color": eq.state?.color || "#ccc"}}
+            style={{ "--status-color": eq.state?.color || "#ccc" }}
             onClick={() => onSelect(eq)}
           >
             <div className="equipment-name">{eq.name}</div>
